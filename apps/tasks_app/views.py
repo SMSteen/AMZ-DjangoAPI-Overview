@@ -38,5 +38,5 @@ def destroy(request, task_id):
 
 
 def index_people(request):
-    data = serializers.serialize("json", Person.objects.all())
+    data = serializers.serialize("json", Person.objects.all().order_by('first_name'))
     return HttpResponse(data, content_type="application/json", status=200)

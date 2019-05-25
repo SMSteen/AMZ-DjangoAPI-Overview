@@ -6,7 +6,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=255)
 
     def __repr__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.id} {self.first_name} {self.last_name}'
 
     def natural_key(self):
         return(f'{self.first_name} {self.last_name}')
