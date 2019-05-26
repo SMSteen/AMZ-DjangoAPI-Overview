@@ -26,6 +26,19 @@ def show(request, task_id):
     data = serializers.serialize("json", Task.objects.filter(id=task_id), indent=2, use_natural_foreign_keys=True)
     return HttpResponse(data, content_type="application/json", status=200)
 
+def edit(request, task_id):
+    edit_task = Task.objects.get(id=task_id)
+    if request.method == 'POST':
+        postData = json.loads(request.body.decode())
+        print(postData)
+        if 'addPerson' in postData:  # dealing with a request to add person to task assignment
+            # get the person we need to addd
+            person = Person.objects.get(id=postData['addPerson'])
+            # add the relationship
+            edit_task.assigned.add(person)
+    data = serializers.serialize("json", [edit_task], indent=2, use_natural_foreign_keys=True)
+    return HttpResponse(data, content_type="application/json", status=200)
+
 def destroy(request, task_id):
     # get the task
     del_task = Task.objects.get(id=task_id)
@@ -36,7 +49,6 @@ def destroy(request, task_id):
     # delete the task
     del_task.delete()
     return HttpResponse(data, content_type="application/json", status=200)
-
 
 def index_people(request):
     data = serializers.serialize("json", Person.objects.all().order_by('first_name'))
@@ -50,3 +62,16 @@ def show_person(request, person_id):
         "tasks": serializers.serialize("json", person.tasks.all())  # get person's tasks
     }
     return HttpResponse(json.dumps(result), content_type="application/json", status=200)
+
+def edit_person(request, person_id):
+    edit_person = Person.objects.get(id=person_id)
+    if request.method == 'POST':
+        postData = json.loads(request.body.decode())
+        print(postData)
+        if 'removeTask' in postData:  # dealing with a request to remove task assignment
+            # get the task we need to remove
+            task = Task.objects.get(id=postData['removeTask'])
+            # remove the relationship
+            edit_person.tasks.remove(task)
+    data = serializers.serialize("json", [edit_person], indent=2, use_natural_foreign_keys=True)
+    return HttpResponse(data, content_type="application/json", status=200)
