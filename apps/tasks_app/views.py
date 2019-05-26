@@ -16,8 +16,9 @@ def index(request):
         task.assigned.add(assigned_to)
         # serialize the data so we can send back
         data = serializers.serialize("json", [task], use_natural_foreign_keys=True)
+    
     else:  # it's a get request, send back resources
-        data = serializers.serialize("json", Task.objects.all(), indent=2, use_natural_foreign_keys=True)
+        data = serializers.serialize("json", Task.objects.all().order_by('completed', '-created_at'), indent=2, use_natural_foreign_keys=True)
     
     return HttpResponse(data, content_type="application/json", status=200)
 
@@ -40,3 +41,12 @@ def destroy(request, task_id):
 def index_people(request):
     data = serializers.serialize("json", Person.objects.all().order_by('first_name'))
     return HttpResponse(data, content_type="application/json", status=200)
+
+def show_person(request, person_id):
+    # get the person
+    person = Person.objects.get(id=person_id)
+    result = {
+        "person": serializers.serialize("json", [person]),
+        "tasks": serializers.serialize("json", person.tasks.all())  # get person's tasks
+    }
+    return HttpResponse(json.dumps(result), content_type="application/json", status=200)

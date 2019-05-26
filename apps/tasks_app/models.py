@@ -9,7 +9,7 @@ class Person(models.Model):
         return f'{self.id} {self.first_name} {self.last_name}'
 
     def natural_key(self):
-        return(f'{self.first_name} {self.last_name}')
+        return( {'id': self.id, 'first_name': self.first_name, 'last_name': self.last_name} )
 
 class Task(models.Model):
     title = models.CharField(max_length=50)

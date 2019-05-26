@@ -7,4 +7,5 @@ urlpatterns = [
     path('tasks/<int:task_id>', views.show),  # gets one task
     path('tasks/<int:task_id>/delete', views.destroy),  # deteles one task
     path('people/', views.index_people),  # get list of all people
+    path('people/<int:person_id>', views.show_person),  # gets one person
 ]
